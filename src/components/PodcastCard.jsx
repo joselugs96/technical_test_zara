@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
 
 function PodcastCard({ podcast }) {
+  const podcastId = podcast.id.attributes["im:id"];
+
   return (
     <Link
-      to={`/podcast/${podcast.id.attributes["im:id"]}`}
+      to={`/podcast/${podcastId}`}
+      state={{ podcastId }}
       className="bg-white rounded-xl shadow p-4 flex flex-col items-center text-center hover:shadow-lg transition-shadow cursor-pointer"
     >
       <img

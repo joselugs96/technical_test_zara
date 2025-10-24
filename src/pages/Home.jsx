@@ -6,20 +6,18 @@ function Home() {
   const [loading, setLoading] = useState(true);
 
   const CACHE_KEY = "top_podcasts_cache";
-  const CACHE_TIME_KEY = "top_podcasts_timestamp";
   const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
   useEffect(() => {
     async function fetchPodcasts() {
       try {
         const cachedData = localStorage.getItem(CACHE_KEY);
-        const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+        const now = new Date().getTime();
 
-        if (cachedData && cachedTime) {
-          const age = Date.now() - parseInt(cachedTime, 10);
-
-          if (age < ONE_DAY_MS) {
-            setPodcasts(JSON.parse(cachedData));
+        if (cachedData) {
+          const parsedCache = JSON.parse(cachedData);
+          if (now - parsedCache.timestamp < ONE_DAY_MS) {
+            setPodcasts(parsedCache.data);
             setLoading(false);
             return;
           }
@@ -27,11 +25,16 @@ function Home() {
         const response = await fetch(
           "https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json"
         );
+
         const data = await response.json();
         setPodcasts(data.feed.entry);
 
-        localStorage.setItem(CACHE_KEY, JSON.stringify(data.feed.entry));
-        localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
+        const newCacheItem = {
+          timestamp: now,
+          data: data.feed.entry,
+        };
+
+        localStorage.setItem(CACHE_KEY, JSON.stringify(newCacheItem));
       } catch (error) {
         console.error("Error fetching podcasts:", error);
       } finally {
