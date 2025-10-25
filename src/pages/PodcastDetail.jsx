@@ -1,16 +1,19 @@
-import PodcastDetailCard from "@/components/PodcastDetailCard";
+import PodcastSidebar from "@/components/PodcastSidebar";
 import PodcastEpisodeList from "@/components/PodcastEpisodeList";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useAppDispatch } from "@/store/hooks";
+import { startLoading, stopLoading } from "@/store/loadingSlice";
 
 function PodcastDetail() {
   const location = useLocation();
   const podcastId = location.state?.podcastId;
   const [podcastDetail, setPodcastDetail] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const CACHE_EPISODE_KEY = `podcast_data_${podcastId}`;
   const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+
+  const dispatch = useAppDispatch();
 
   async function fetchPodcastEpisodes(feedUrl) {
     if (!feedUrl) return [];
@@ -53,12 +56,14 @@ function PodcastDetail() {
         const parsedCache = JSON.parse(cachedData);
         if (now - parsedCache.timestamp < ONE_DAY_MS) {
           setPodcastDetail(parsedCache.data);
-          setLoading(false);
+          dispatch(stopLoading());
           return;
         }
       }
 
       try {
+        dispatch(startLoading());
+
         const podcastDetailRes = await fetch(
           `https://itunes.apple.com/lookup?id=${podcastId}`
         );
@@ -66,7 +71,7 @@ function PodcastDetail() {
 
         if (!podcastDetailData.results?.length) {
           console.warn("No se encontró información para el podcast.");
-          setLoading(false);
+          dispatch(stopLoading());
           return;
         }
 
@@ -86,32 +91,25 @@ function PodcastDetail() {
       } catch (error) {
         console.error("Error fetching podcasts:", error);
       } finally {
-        setLoading(false);
+        dispatch(stopLoading());
       }
     }
 
     if (podcastId) fetchPodcastDetail();
   }, [podcastId]);
 
-  if (loading) return <p className="p-6">Cargando detalles del podcast...</p>;
   if (!podcastDetail) return <p className="p-6">No se encontró el podcast.</p>;
 
-  const {
-    artworkUrl600,
-    collectionName,
-    artistName,
-    primaryGenreName,
-    trackCount,
-  } = podcastDetail;
+  const { artworkUrl600, collectionName, artistName, trackCount } =
+    podcastDetail;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-6 bg-gray-50 min-h-screen">
       <aside className="md:col-span-1 bg-white rounded-2xl shadow p-6 flex flex-col items-center text-center">
-        <PodcastDetailCard
+        <PodcastSidebar
           image={artworkUrl600}
           name={collectionName}
           author={artistName}
-          genre={primaryGenreName}
         />
       </aside>
       <main className="md:col-span-3">
