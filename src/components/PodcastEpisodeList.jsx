@@ -1,48 +1,53 @@
+import React from "react";
+import { useAppSelector } from "@/store/hooks";
 import { Link } from "react-router-dom";
 
-function PodcastEpisodeList({ episodes, trackCount }) {
-  return (
-    <div className="bg-white rounded-2xl shadow p-6">
-      <h3 className="text-xl font-semibold mb-4">
-        Episodes: {episodes.length || trackCount}
-      </h3>
+const PodcastEpisodeList = () => {
+  const podcastDetail = useAppSelector((state) => state.podcast);
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
+  if (!podcastDetail) {
+    return <p>Cargando lista de episodios...</p>;
+  }
+
+  const { episodes, trackCount, trackId: podcastId } = podcastDetail;
+
+  const episodeCount = trackCount || episodes?.length || 0;
+
+  return (
+    <section className="space-y-6">
+      <div className="bg-white p-4 shadow-md rounded-lg">
+        <h2 className="font-bold text-xl">Episodes: {episodeCount}</h2>
+      </div>
+
+      <div className="bg-white p-4 shadow-md rounded-lg">
+        <table className="min-w-full divide-y divide-gray-200">
           <thead>
-            <tr className="border-b bg-gray-100">
-              <th className="py-2 px-4 font-semibold">Title</th>
-              <th className="py-2 px-4 font-semibold w-32">Date</th>
-              <th className="py-2 px-4 font-semibold w-24 text-right">
-                Duration
-              </th>
+            <tr>
+              <th className="py-3 px-2 text-left font-bold">Title</th>
+              <th className="py-3 px-2 text-left font-bold">Date</th>
+              <th className="py-3 px-2 text-left font-bold">Duration</th>
             </tr>
           </thead>
           <tbody>
-            {episodes.map((ep, index) => {
-              const date = new Date(ep.pubDate).toLocaleDateString();
-              const { title: episodeTitle, duration: episodeDuration } = ep;
-
-              return (
-                <tr
-                  key={index}
-                  className="border-b hover:bg-gray-50 transition"
-                >
-                  <td className="py-2 px-4 text-blue-600 hover:underline">
-                    {episodeTitle}
-                  </td>
-                  <td className="py-2 px-4 text-gray-600">{date}</td>
-                  <td className="py-2 px-4 text-gray-600 text-right">
-                    {episodeDuration}
-                  </td>
-                </tr>
-              );
-            })}
+            {episodes.map((episode) => (
+              <tr key={episode.id} className="hover:bg-gray-50">
+                <td className="py-2 px-2 text-blue-600 hover:underline">
+                  <Link
+                    state={{ episode }}
+                    to={`/podcast/${podcastId}/episode/${episode.id}`}
+                  >
+                    {episode.title}
+                  </Link>
+                </td>
+                <td className="py-2 px-2 text-gray-600">{episode.pubDate}</td>
+                <td className="py-2 px-2 text-gray-600">{episode.duration}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
-    </div>
+    </section>
   );
-}
+};
 
 export default PodcastEpisodeList;

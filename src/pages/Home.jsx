@@ -3,6 +3,7 @@ import PodcastsList from "@/components/PodcastsList";
 
 import { useAppDispatch } from "@/store/hooks";
 import { startLoading, stopLoading } from "@/store/loadingSlice";
+import { clearSelectedPodcast } from "@/store/podcastSlice";
 
 function Home() {
   const [podcasts, setPodcasts] = useState([]);
@@ -13,6 +14,8 @@ function Home() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    dispatch(clearSelectedPodcast());
+
     async function fetchPodcasts() {
       const cachedData = localStorage.getItem(CACHE_KEY);
       const now = new Date().getTime();
