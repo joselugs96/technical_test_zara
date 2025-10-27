@@ -1,6 +1,7 @@
 import { useAppSelector } from "@/store/hooks";
 import { Link } from "react-router-dom";
 import type { PodcastDetail, Episode } from "@/types/podcast";
+import { formatDate, formatDuration } from "@/utils/formatters";
 
 function PodcastEpisodeList() {
   const podcastDetail = useAppSelector(
@@ -17,7 +18,9 @@ function PodcastEpisodeList() {
   return (
     <section className="space-y-6">
       <div className="bg-white p-4 shadow-md rounded-lg">
-        <h2 className="font-bold text-xl">Episodes: {episodeCount}</h2>
+        <h2 className="font-bold text-left text-xl">
+          Episodes: {episodeCount}
+        </h2>
       </div>
 
       <div className="bg-white p-4 shadow-md rounded-lg">
@@ -30,22 +33,26 @@ function PodcastEpisodeList() {
             </tr>
           </thead>
           <tbody>
-            {episodes.map((episode: Episode) => (
+            {episodes.map((episode) => (
               <tr
                 key={episode.id ?? crypto.randomUUID()}
                 className="hover:bg-gray-50"
               >
-                <td className="py-2 px-2 text-blue-600 hover:underline">
+                <td className="py-2 px-2 text-left text-blue-600 hover:underline">
                   <Link
                     state={{ episode }}
-                    to={`/podcast/${podcastId}/episode/${episode.id}`}
+                    to={`/podcast/${podcastId}/episode/${encodeURIComponent(
+                      episode.id
+                    )}`}
                   >
                     {episode.title}
                   </Link>
                 </td>
-                <td className="py-2 px-2 text-gray-600">{episode.pubDate}</td>
-                <td className="py-2 px-2 text-gray-600">
-                  {episode.duration ?? "—"}
+                <td className="py-2 px-2 text-left text-gray-600">
+                  {formatDate(episode.pubDate)}
+                </td>
+                <td className="py-2 px-2 text-left text-gray-600">
+                  {formatDuration(episode.duration) ?? "—"}
                 </td>
               </tr>
             ))}

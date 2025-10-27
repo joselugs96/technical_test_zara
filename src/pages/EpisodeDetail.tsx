@@ -1,11 +1,14 @@
-import React, { FC, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import PodcastSidebar from "@/components/PodcastSidebar";
 import { useAppSelector } from "@/store/hooks";
 import { PodcastDetail } from "@/types/podcast";
 
 function EpisodeDetail() {
-  const { episodeId } = useParams<{ episodeId: string }>();
+  const { episodeId: encodedEpisodeId } = useParams<{ episodeId: string }>();
+  const episodeId = encodedEpisodeId
+    ? decodeURIComponent(encodedEpisodeId)
+    : undefined;
 
   const podcastDetail = useAppSelector(
     (state) => state.podcast.selectedPodcast as PodcastDetail
@@ -23,16 +26,15 @@ function EpisodeDetail() {
   const { title, description, audio } = episodeDetail;
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-6 bg-gray-50 min-h-screen">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-6 bg-gray-50">
       <aside className="md:col-span-1 bg-white rounded-2xl shadow p-6 flex flex-col items-center text-center h-fit">
         <PodcastSidebar />
       </aside>
-
-      <main className="md:col-span-3 bg-white p-6 shadow-md rounded-lg">
-        <h2 className="text-2xl font-bold mb-4 border-b pb-2">{title}</h2>
+      <div className="bg-white p-4 shadow-md rounded-lg md:col-span-3">
+        <h2 className="font-bold text-left text-xl pb-5">{title}</h2>
 
         <div
-          className="text-gray-700 italic leading-relaxed mb-6"
+          className="text-gray-700 text-left italic leading-relaxed mb-6"
           dangerouslySetInnerHTML={{ __html: description }}
         />
 
@@ -48,7 +50,7 @@ function EpisodeDetail() {
             </p>
           )}
         </div>
-      </main>
+      </div>
     </div>
   );
 }

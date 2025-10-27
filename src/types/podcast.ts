@@ -95,7 +95,7 @@ export interface PodcastDetail {
 }
 
 export interface Episode {
-  id: string | null;
+  id: string;
   title: string;
   audio: string | null;
   pubDate: string;

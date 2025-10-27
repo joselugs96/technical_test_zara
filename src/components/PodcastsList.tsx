@@ -24,22 +24,22 @@ function PodcastsList() {
 
   return (
     <div className="mx-auto p-4">
-      <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
-        <span className="bg-blue-500 text-white font-semibold px-4 py-2 rounded-full mb-3 sm:mb-0">
+      <div className="flex items-center justify-end gap-3 mb-6">
+        <span className="bg-blue-500 text-white font-semibold px-4 py-2 rounded-full text-center">
           {filteredPodcasts.length}
         </span>
 
         <input
           type="text"
           placeholder="Filter podcasts..."
-          className="border rounded-lg px-4 py-2 w-full sm:w-72 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="border rounded-lg px-4 py-2 w-full sm:w-72 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
           value={searchTerm}
           onChange={handleSearchChange}
           aria-label="Filter podcasts by name or author"
         />
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6 p-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {filteredPodcasts.map((podcast) => (
           <PodcastCard key={podcast.id.attributes["im:id"]} podcast={podcast} />
         ))}

@@ -21,11 +21,17 @@ function PodcastDetail() {
   }, [podcastId, dispatch]);
 
   if (!podcastDetail) {
-    return <p className="p-6">Loading Details...</p>;
+    return (
+      <div className="flex items-center justify-center w-full h-screen bg-gray-50">
+        <p className="text-xl md:text-2xl font-semibold text-gray-700 animate-pulse">
+          Loading Details...
+        </p>
+      </div>
+    );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-6 bg-gray-50 min-h-screen">
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-6 bg-gray-50">
       <aside className="md:col-span-1 bg-white rounded-2xl shadow p-6 flex flex-col items-center text-center">
         <PodcastSidebar />
       </aside>

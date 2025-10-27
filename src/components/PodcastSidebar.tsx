@@ -1,4 +1,3 @@
-import React, { FC } from "react";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "@/store/hooks";
 import { PodcastDetail } from "@/types/podcast";
@@ -23,7 +22,7 @@ function PodcastSidebar() {
   const detailUrl = `/podcast/${trackId}`;
 
   return (
-    <aside className="p-4 border border-gray-300 rounded-lg shadow-md bg-white">
+    <aside className="p-4 border border-gray-300 rounded-lg shadow-md bg-white text-left">
       <Link to={detailUrl} className="block mb-4">
         <img
           src={image}
@@ -35,7 +34,7 @@ function PodcastSidebar() {
       <hr className="my-3" />
 
       <Link to={detailUrl}>
-        <h4 className="font-bold text-lg">{name}</h4>
+        <h4 className="font-bold text-lg pb-3">{name}</h4>
         <p className="italic text-sm text-gray-600">by {author}</p>
       </Link>
 
