@@ -1,13 +1,17 @@
+import React, { useEffect } from "react";
 import PodcastSidebar from "@/components/PodcastSidebar";
 import PodcastEpisodeList from "@/components/PodcastEpisodeList";
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { loadPodcastDetail } from "@/services/podcastService"; // <-- Importar el servicio
+import { loadPodcastDetail } from "@/services/podcastService";
 
 function PodcastDetail() {
-  const { podcastId } = useParams();
-  const podcastDetail = useAppSelector((state) => state.podcast);
+  const { podcastId } = useParams<{ podcastId: string }>();
+
+  const podcastDetail = useAppSelector(
+    (state) => state.podcast.selectedPodcast
+  );
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -16,7 +20,9 @@ function PodcastDetail() {
     }
   }, [podcastId, dispatch]);
 
-  if (!podcastDetail) return <p className="p-6">Loading Details...</p>;
+  if (!podcastDetail) {
+    return <p className="p-6">Loading Details...</p>;
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 p-6 bg-gray-50 min-h-screen">

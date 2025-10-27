@@ -1,17 +1,18 @@
-import React from "react";
 import { useAppSelector } from "@/store/hooks";
 import { Link } from "react-router-dom";
+import type { PodcastDetail, Episode } from "@/types/podcast";
 
-const PodcastEpisodeList = () => {
-  const podcastDetail = useAppSelector((state) => state.podcast);
+function PodcastEpisodeList() {
+  const podcastDetail = useAppSelector(
+    (state) => state.podcast.selectedPodcast as PodcastDetail | null
+  );
 
   if (!podcastDetail) {
     return <p>Loading episodes…</p>;
   }
 
-  const { episodes, trackCount, trackId: podcastId } = podcastDetail;
-
-  const episodeCount = trackCount || episodes?.length || 0;
+  const { episodes = [], trackCount, trackId: podcastId } = podcastDetail;
+  const episodeCount = trackCount || episodes.length;
 
   return (
     <section className="space-y-6">
@@ -29,8 +30,11 @@ const PodcastEpisodeList = () => {
             </tr>
           </thead>
           <tbody>
-            {episodes.map((episode) => (
-              <tr key={episode.id} className="hover:bg-gray-50">
+            {episodes.map((episode: Episode) => (
+              <tr
+                key={episode.id ?? crypto.randomUUID()}
+                className="hover:bg-gray-50"
+              >
                 <td className="py-2 px-2 text-blue-600 hover:underline">
                   <Link
                     state={{ episode }}
@@ -40,7 +44,9 @@ const PodcastEpisodeList = () => {
                   </Link>
                 </td>
                 <td className="py-2 px-2 text-gray-600">{episode.pubDate}</td>
-                <td className="py-2 px-2 text-gray-600">{episode.duration}</td>
+                <td className="py-2 px-2 text-gray-600">
+                  {episode.duration ?? "—"}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -48,6 +54,6 @@ const PodcastEpisodeList = () => {
       </div>
     </section>
   );
-};
+}
 
 export default PodcastEpisodeList;

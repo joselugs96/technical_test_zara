@@ -1,9 +1,12 @@
-import React from "react";
+import React, { FC } from "react";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "@/store/hooks";
+import { PodcastDetail } from "@/types/podcast";
 
-const PodcastSidebar = () => {
-  const podcastDetail = useAppSelector((state) => state.podcast);
+function PodcastSidebar() {
+  const podcastDetail = useAppSelector(
+    (state) => state.podcast.selectedPodcast as PodcastDetail | null
+  );
 
   if (!podcastDetail) {
     return <p>Loading sidebar information…</p>;
@@ -14,22 +17,26 @@ const PodcastSidebar = () => {
     collectionName: name,
     artistName: author,
     description,
+    trackId,
   } = podcastDetail;
 
-  const podcastId = podcastDetail.trackId;
-  const detailUrl = `/podcast/${podcastId}`;
+  const detailUrl = `/podcast/${trackId}`;
 
   return (
-    <aside className="p-4 border border-gray-300 rounded-lg shadow-md">
+    <aside className="p-4 border border-gray-300 rounded-lg shadow-md bg-white">
       <Link to={detailUrl} className="block mb-4">
-        <img src={image} alt={name} className="w-full h-auto rounded-md" />
+        <img
+          src={image}
+          alt={name}
+          className="w-full h-auto rounded-md object-cover"
+        />
       </Link>
 
       <hr className="my-3" />
 
       <Link to={detailUrl}>
         <h4 className="font-bold text-lg">{name}</h4>
-        <p className="italic text-sm">by {author}</p>
+        <p className="italic text-sm text-gray-600">by {author}</p>
       </Link>
 
       <hr className="my-3" />
@@ -41,6 +48,6 @@ const PodcastSidebar = () => {
       />
     </aside>
   );
-};
+}
 
 export default PodcastSidebar;

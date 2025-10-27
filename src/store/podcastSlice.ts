@@ -1,17 +1,22 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { PodcastDetail } from "@/types/podcast";
+interface PodcastState {
+  selectedPodcast: PodcastDetail | null;
+}
 
-type PodcastDetailType = any;
-const initialState: PodcastDetailType | null = null;
+const initialState: PodcastState = {
+  selectedPodcast: null,
+};
 
 export const podcastSlice = createSlice({
   name: "podcast",
-  initialState: initialState,
+  initialState,
   reducers: {
-    setSelectedPodcast: (state, action: PayloadAction<any>) => {
-      return action.payload;
+    setSelectedPodcast: (state, action: PayloadAction<PodcastDetail>) => {
+      state.selectedPodcast = action.payload;
     },
-    clearSelectedPodcast: () => {
-      return null;
+    clearSelectedPodcast: (state) => {
+      state.selectedPodcast = null;
     },
   },
 });

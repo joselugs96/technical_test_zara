@@ -1,6 +1,8 @@
 import { startLoading, stopLoading } from "@/store/loadingSlice";
 import { setPodcastList } from "@/store/podcastListSlice";
 import { setSelectedPodcast } from "@/store/podcastSlice";
+import type { AppDispatch } from "@/store/store";
+import { PodcastDetail, Episode } from "@/types/podcast";
 
 const TOP_PODCASTS_URL =
   "https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json";
@@ -9,9 +11,12 @@ const CORS_PROXY = "https://cors-anywhere.herokuapp.com/";
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
-async function fetchPodcastFeedUrl(feedUrl) {
-  if (!feedUrl)
+async function fetchPodcastFeedUrl(
+  feedUrl?: string
+): Promise<{ episodes: Episode[]; description: string }> {
+  if (!feedUrl) {
     return { episodes: [], description: "Descripción no disponible" };
+  }
 
   try {
     const rssRes = await fetch(`${CORS_PROXY}${feedUrl}`);
@@ -28,8 +33,8 @@ async function fetchPodcastFeedUrl(feedUrl) {
 
     const items = xml.querySelectorAll("item");
 
-    const episodes = Array.from(items).map((item) => ({
-      id: item.querySelector("guid")?.textContent,
+    const episodes: Episode[] = Array.from(items).map((item) => ({
+      id: item.querySelector("guid")?.textContent ?? null,
       title: item.querySelector("title")?.textContent ?? "Sin título",
       audio: item.querySelector("enclosure")?.getAttribute("url") ?? null,
       pubDate: item.querySelector("pubDate")?.textContent ?? "",
@@ -48,24 +53,22 @@ async function fetchPodcastFeedUrl(feedUrl) {
   }
 }
 
-export async function loadTopPodcasts(dispatch) {
+export async function loadTopPodcasts(dispatch: AppDispatch): Promise<void> {
   const CACHE_KEY = "top_podcasts_list";
+  const now = Date.now();
 
   try {
     const cachedData = localStorage.getItem(CACHE_KEY);
-    const now = Date.now();
 
     if (cachedData) {
       const parsed = JSON.parse(cachedData);
       if (now - parsed.timestamp < ONE_DAY_MS) {
         dispatch(setPodcastList(parsed.data));
-        return parsed.data;
+        return;
       }
     }
 
-    const response = await fetch(
-      "https://itunes.apple.com/us/rss/toppodcasts/limit=100/genre=1310/json"
-    );
+    const response = await fetch(TOP_PODCASTS_URL);
     if (!response.ok) throw new Error(`Error HTTP ${response.status}`);
 
     const data = await response.json();
@@ -77,18 +80,20 @@ export async function loadTopPodcasts(dispatch) {
     );
 
     dispatch(setPodcastList(podcasts));
-    return podcasts;
   } catch (error) {
     console.error("loadTopPodcasts Error:", error);
     throw error;
   }
 }
 
-export async function loadPodcastDetail(dispatch, podcastId) {
+export async function loadPodcastDetail(
+  dispatch: AppDispatch,
+  podcastId: string
+): Promise<void> {
   const CACHE_KEY = `podcast_data_${podcastId}`;
-  const cachedData = localStorage.getItem(CACHE_KEY);
-  const now = new Date().getTime();
+  const now = Date.now();
 
+  const cachedData = localStorage.getItem(CACHE_KEY);
   if (cachedData) {
     const parsedCache = JSON.parse(cachedData);
     if (now - parsedCache.timestamp < ONE_DAY_MS) {
@@ -108,13 +113,16 @@ export async function loadPodcastDetail(dispatch, podcastId) {
       return;
     }
 
-    const podcastInfo = podcastDetailData.results[0];
-
+    const podcastInfo: PodcastDetail = podcastDetailData.results[0];
     const { episodes, description } = await fetchPodcastFeedUrl(
       podcastInfo.feedUrl
     );
 
-    const fullPodcastDetail = { ...podcastInfo, description, episodes };
+    const fullPodcastDetail: PodcastDetail = {
+      ...podcastInfo,
+      description,
+      episodes,
+    };
 
     dispatch(setSelectedPodcast(fullPodcastDetail));
 

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
+import { PodcastCardProps } from "@/types/podcast";
 
-function PodcastCard({ podcast }) {
+function PodcastCard({ podcast }: PodcastCardProps) {
   const podcastId = podcast.id.attributes["im:id"];
 
   return (

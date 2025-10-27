@@ -1,16 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, ChangeEvent, useMemo } from "react";
 import PodcastCard from "./PodcastCard";
 import { useAppSelector } from "@/store/hooks";
+import { PodcastEntry } from "@/types/podcast";
 
 function PodcastsList() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const podcasts = useAppSelector((state) => state.podcastList);
-  const filteredPodcasts = podcasts.filter((podcast) => {
-    const title = podcast["im:name"].label.toLowerCase();
-    const author = podcast["im:artist"].label.toLowerCase();
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const podcasts = useAppSelector(
+    (state) => state.podcastList as PodcastEntry[]
+  );
+
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredPodcasts = useMemo(() => {
     const term = searchTerm.toLowerCase();
-    return title.includes(term) || author.includes(term);
-  });
+    return podcasts.filter((podcast) => {
+      const title = podcast["im:name"].label.toLowerCase();
+      const author = podcast["im:artist"].label.toLowerCase();
+      return title.includes(term) || author.includes(term);
+    });
+  }, [podcasts, searchTerm]);
 
   return (
     <div className="mx-auto p-4">
@@ -18,12 +28,14 @@ function PodcastsList() {
         <span className="bg-blue-500 text-white font-semibold px-4 py-2 rounded-full mb-3 sm:mb-0">
           {filteredPodcasts.length}
         </span>
+
         <input
           type="text"
           placeholder="Filter podcasts..."
           className="border rounded-lg px-4 py-2 w-full sm:w-72 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={handleSearchChange}
+          aria-label="Filter podcasts by name or author"
         />
       </div>
 
