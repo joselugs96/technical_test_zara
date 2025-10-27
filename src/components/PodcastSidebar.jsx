@@ -6,7 +6,7 @@ const PodcastSidebar = () => {
   const podcastDetail = useAppSelector((state) => state.podcast);
 
   if (!podcastDetail) {
-    return <p>Cargando información lateral...</p>;
+    return <p>Loading sidebar information…</p>;
   }
 
   const {

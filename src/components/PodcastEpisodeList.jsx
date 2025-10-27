@@ -6,7 +6,7 @@ const PodcastEpisodeList = () => {
   const podcastDetail = useAppSelector((state) => state.podcast);
 
   if (!podcastDetail) {
-    return <p>Cargando lista de episodios...</p>;
+    return <p>Loading episodes…</p>;
   }
 
   const { episodes, trackCount, trackId: podcastId } = podcastDetail;

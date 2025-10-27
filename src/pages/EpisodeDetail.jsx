@@ -14,7 +14,7 @@ function EpisodeDetail() {
   }, [podcastDetail, episodeId]);
 
   if (!podcastDetail || !episodeDetail) {
-    return <p className="p-6">Cargando detalles del episodio...</p>;
+    return <p className="p-6">Loading episode details...</p>;
   }
 
   const {
@@ -40,11 +40,11 @@ function EpisodeDetail() {
           {audioUrl ? (
             <audio controls className="w-full">
               <source src={audioUrl} type="audio/mpeg" />
-              Tu navegador no soporta el reproductor de audio.
+              Your browser does not support the audio player.
             </audio>
           ) : (
             <p className="text-red-500">
-              Audio no disponible para este episodio.
+              Audio not available for this episode.
             </p>
           )}
         </div>

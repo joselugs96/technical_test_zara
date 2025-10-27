@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import PodcastCard from "./PodcastCard";
+import { useAppSelector } from "@/store/hooks";
 
-function PodcastsList({ podcasts }) {
+function PodcastsList() {
   const [searchTerm, setSearchTerm] = useState("");
-
+  const podcasts = useAppSelector((state) => state.podcastList);
   const filteredPodcasts = podcasts.filter((podcast) => {
     const title = podcast["im:name"].label.toLowerCase();
     const author = podcast["im:artist"].label.toLowerCase();
