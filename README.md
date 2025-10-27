@@ -1,16 +1,112 @@
-# React + Vite
+# Zara Technical Test - Jose Luis García
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🎧 Podcaster Application
 
-Currently, two official plugins are available:
+This project is a web application built with **React and TypeScript** to list, filter, and view the details and episodes of podcasts, leveraging the rankings and public information from the iTunes/Apple Music API.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Installation and Execution Guide
 
-## React Compiler
+This section explains how to set up and run the application locally.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Prerequisites**
 
-## Expanding the ESLint configuration
+Ensure you have Node.js (version 16 or higher) and npm (or Yarn) installed.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**1. Installing Dependencies**
+
+Clone the repository and install the project dependencies:
+
+```bash
+# Clone the repository
+git clone https://github.com/joselugs96/technical_test_zara.git
+cd technical_test_zara
+
+# Install dependencies
+npm install
+# or yarn install
+```
+
+**2. Execution Modes**
+
+The repository supports two main execution modes, each suited for different purposes.
+
+**Development**
+
+Use this mode for active development, debugging, and Hot Reloading.
+
+```bash
+npm run dev
+# or yarn dev
+```
+
+Once started, the application will be available in your browser at: http://localhost:3000 (or the configured port).
+
+**Production**
+
+**A. Building the Application (Build):**
+
+This mode generates an optimized, minimized, and deployable version of the application. It requires two steps: first building, then serving the static files.
+
+```bash
+npm run build
+# or yarn build
+```
+
+This command creates the final application version in the dist/ folder (or the folder configured in your project).
+
+**B. Serving Locally (Serve):**
+
+To simulate a real web server environment, you may use a tool like serve.
+
+1. Install serve (Globally, if you don't have it):
+
+```bash
+npm install -g serve
+```
+
+2. Run the Local Server:
+
+```bash
+serve -s dist -l 5000
+```
+
+The optimized application will be available at: http://localhost:5000.
+
+## 💻 Key Technologies
+
+- Framework: React
+- Language: TypeScript
+- State Management: Redux Toolkit
+- Styling: Tailwind CSS
+- Routing: React Router DOM
+- APIs: iTunes Search API (with a caching layer)
+
+## ⚠️ Important Note: CORS and the Testing Proxy
+
+**Activating the CORS Proxy for Detail Loading**
+
+To access the specific podcast details and fetch the episode list from the Apple/iTunes API, we must use a **proxy server**. This is necessary because the API endpoint enforces **Cross-Origin Resource Sharing (CORS) restrictions** that prevent direct browser requests.
+
+For local development and testing, we are temporarily using the public proxy https://cors-anywhere.herokuapp.com/.
+
+**🚨 IMPORTANT: Enabling Testing Mode**
+
+The proxy server requires a manual step to be used with local development. Before running the application for the first time or if you experience CORS errors, you must **proxy server**:
+
+1. Open https://cors-anywhere.herokuapp.com/ in your browser.
+2. Click the "**Request temporary access to the demo server**" button.
+
+This action enables the proxy to route your requests for a limited time.
+
+**Request Structure:**
+
+Once activated, all API requests in your code must be prefixed as follows:
+
+```bash
+https://cors-anywhere.herokuapp.com/ + <API_URL>
+```
+
+**⚠️ Warning for Production:**
+
+1. **Development/Testing Only**: This proxy is strictly for local development and **MUST NOT be used in a production environment**. Public proxies are subject to rate limits, security risks, and service downtime.
+2. **Production Solution**: If this project moves to production, this proxy must be replaced by a robust, self-hosted solution (e.g., a simple serverless function or a dedicated web server configuration).
