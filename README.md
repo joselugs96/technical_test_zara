@@ -110,3 +110,33 @@ https://cors-anywhere.herokuapp.com/ + <API_URL>
 
 1. **Development/Testing Only**: This proxy is strictly for local development and **MUST NOT be used in a production environment**. Public proxies are subject to rate limits, security risks, and service downtime.
 2. **Production Solution**: If this project moves to production, this proxy must be replaced by a robust, self-hosted solution (e.g., a simple serverless function or a dedicated web server configuration).
+
+## 🧪 Testing and Quality Control
+
+This project uses Vitest for running unit tests across services, Redux slices, components, and utilities, ensuring the application logic is robust and reliable.
+
+**Running Unit Tests**
+
+To execute the entire suite of unit tests, use the following command:
+
+```bash
+npm run test
+# or yarn test
+```
+
+**Viewing Test Coverage**
+
+To run the tests and generate an HTML report detailing the code coverage (which files, lines, functions, and branches are covered by tests), use:
+
+```bash
+npm run coverage
+# or yarn coverage
+```
+
+This command will:
+
+1. Run all tests.
+2. Output a summary table in the console.
+3. Generate a comprehensive, interactive HTML report in the coverage/ directory.
+
+To view the detailed report, open the index.html file located in the generated coverage/ folder in your browser.
