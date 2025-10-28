@@ -5,6 +5,7 @@
   padding: 2rem;
   text-align: center;
   width: 100%;
+  background-color: #fff;
 }
 
 @media (min-width: 576px) {
@@ -35,6 +36,14 @@
   #root {
     max-width: 1320px;
   }
+}
+
+body {
+  background-color: #fff;
+}
+
+:root {
+  color: #000;
 }
 
 .logo {

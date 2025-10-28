@@ -34,7 +34,7 @@ async function fetchPodcastFeedUrl(
     const items = xml.querySelectorAll("item");
 
     const episodes: Episode[] = Array.from(items).map((item) => ({
-      id: item.querySelector("guid")?.textContent ?? null,
+      id: item.querySelector("guid")?.textContent ?? "",
       title: item.querySelector("title")?.textContent ?? "Sin título",
       audio: item.querySelector("enclosure")?.getAttribute("url") ?? null,
       pubDate: item.querySelector("pubDate")?.textContent ?? "",
@@ -80,6 +80,7 @@ export async function loadTopPodcasts(dispatch: AppDispatch): Promise<void> {
     );
 
     dispatch(setPodcastList(podcasts));
+    return;
   } catch (error) {
     console.error("loadTopPodcasts Error:", error);
     throw error;
@@ -130,6 +131,7 @@ export async function loadPodcastDetail(
       CACHE_KEY,
       JSON.stringify({ timestamp: now, data: fullPodcastDetail })
     );
+    return;
   } catch (error) {
     console.error("Error retrieving podcast details", error);
   } finally {
