@@ -27,21 +27,29 @@ describe("EpisodeDetail", () => {
     ],
   };
 
+  let useAppSelectorSpy: vi.SpyInstance;
+
+  beforeEach(() => {
+    useAppSelectorSpy = vi.spyOn(hooks, "useAppSelector");
+  });
+
   afterEach(() => {
-    vi.restoreAllMocks();
+    useAppSelectorSpy.mockRestore();
   });
 
   it("muestra mensaje de carga cuando no hay datos", () => {
-    vi.spyOn(hooks, "useAppSelector").mockReturnValue(null);
+    useAppSelectorSpy.mockReturnValue(null);
 
     render(
       <MemoryRouter initialEntries={["/podcast/1/episode/ep1"]}>
+        {" "}
         <Routes>
+          {" "}
           <Route
             path="/podcast/:podcastId/episode/:episodeId"
             element={<EpisodeDetail />}
-          />
-        </Routes>
+          />{" "}
+        </Routes>{" "}
       </MemoryRouter>
     );
 
@@ -49,16 +57,18 @@ describe("EpisodeDetail", () => {
   });
 
   it("renderiza el episodio correctamente cuando hay datos", () => {
-    vi.spyOn(hooks, "useAppSelector").mockReturnValue(mockPodcastDetail);
+    useAppSelectorSpy.mockReturnValue(mockPodcastDetail);
 
     render(
       <MemoryRouter initialEntries={["/podcast/1/episode/ep1"]}>
+        {" "}
         <Routes>
+          {" "}
           <Route
             path="/podcast/:podcastId/episode/:episodeId"
             element={<EpisodeDetail />}
-          />
-        </Routes>
+          />{" "}
+        </Routes>{" "}
       </MemoryRouter>
     );
 
@@ -68,7 +78,7 @@ describe("EpisodeDetail", () => {
     expect(screen.getByText(/this is the first episode/i)).toBeInTheDocument();
 
     const audio = document.querySelector("audio");
-    expect(audio).toBeTruthy();
+    expect(audio).toBeInTheDocument();
     const source = audio?.querySelector("source");
     expect(source).toHaveAttribute("src", "https://example.com/audio.mp3");
 
@@ -76,20 +86,24 @@ describe("EpisodeDetail", () => {
   });
 
   it("muestra el mensaje de audio no disponible si no hay audio", () => {
-    vi.spyOn(hooks, "useAppSelector").mockReturnValue(mockPodcastDetail);
+    useAppSelectorSpy.mockReturnValue(mockPodcastDetail);
 
     render(
       <MemoryRouter initialEntries={["/podcast/1/episode/ep2"]}>
+        {" "}
         <Routes>
+          {" "}
           <Route
             path="/podcast/:podcastId/episode/:episodeId"
             element={<EpisodeDetail />}
-          />
-        </Routes>
+          />{" "}
+        </Routes>{" "}
       </MemoryRouter>
     );
 
     expect(screen.getByText(/second episode/i)).toBeInTheDocument();
     expect(screen.getByText(/audio not available/i)).toBeInTheDocument();
+
+    expect(document.querySelector("audio")).not.toBeInTheDocument();
   });
 });
